@@ -175,7 +175,7 @@ const getTimestamp = () => Date.now()
 
 const createMix = (preset) => Object.fromEntries(soundLayers.map((layer) => [
   layer.id,
-  { volume: preset.layers[layer.id] ?? 40, enabled: (preset.layers[layer.id] ?? 0) > 0 },
+  { volume: preset.layers[layer.id] ?? 40, enabled: (preset.layers[layer.id] ?? 0) > 0, speed: 1 },
 ]))
 
 function App() {
@@ -219,6 +219,9 @@ function App() {
     }
 
     const nextSource = getAudioSource(layer, variantByLayer[layer.id])
+    audio.preservesPitch = true
+    audio.defaultPlaybackRate = mix[layer.id].speed
+    audio.playbackRate = mix[layer.id].speed
     if (audioSourceByLayerRef.current.get(layer.id) !== nextSource) {
       const wasPlaying = !audio.paused
       audio.pause()
@@ -311,6 +314,9 @@ function App() {
     audio.pause()
     audio.src = nextSource
     audio.load()
+    audio.preservesPitch = true
+    audio.defaultPlaybackRate = mix[layer.id].speed
+    audio.playbackRate = mix[layer.id].speed
     audioSourceByLayerRef.current.set(layer.id, nextSource)
     audio.volume = getLayerVolume(layer.id, true)
     audio.play().catch(() => {
@@ -625,6 +631,39 @@ function App() {
                 <input type="range" min="0" max="100" aria-label={`${layer.name} volume`} value={layer.volume} onChange={(event) => updateLayer(layer.id, { volume: Number(event.target.value) })} />
                 <span>{layer.volume}%</span>
               </div>
+              <details className="layer-settings" name="layer-speed-settings"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape') {
+                    event.currentTarget.open = false
+                    event.currentTarget.querySelector('summary').focus()
+                  }
+                }}
+              >
+                <summary aria-label={`${layer.name} settings`}>
+                  Settings <span>{layer.speed.toFixed(2)}×</span>
+                </summary>
+                <div className="speed-popover">
+                <label className="speed-control">
+                  <span>Speed</span>
+                  <input
+                    type="range"
+                    min="0.75"
+                    max="1.25"
+                    step="0.05"
+                    aria-label={`${layer.name} speed`}
+                    aria-valuetext={`${layer.speed.toFixed(2)} times normal speed`}
+                    value={layer.speed}
+                    onChange={(event) => updateLayer(layer.id, { speed: Number(event.target.value) })}
+                  />
+                </label>
+                <div className="speed-scale" aria-hidden="true">
+                  <span>0.75×</span><span>1×</span><span>1.25×</span>
+                </div>
+                </div>
+              </details>
             </article>
           ))}
 
