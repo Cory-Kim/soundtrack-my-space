@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import audioCatalog from './data/audioCatalog.json'
 import './App.css'
 
 const presets = [
@@ -78,73 +79,73 @@ const soundLayers = [
     id: 'rain',
     name: 'Rain',
     icon: '☔',
-    variants: ['Window Rain', 'Soft Rain', 'Gentle Drops', 'Distant Rain'],
+    variants: audioCatalog.rain,
   },
   {
     id: 'coffee',
-    name: 'Cafe Chatter',
+    name: 'Coffee Shop',
     icon: '☕',
-    variants: ['Muffled Cafe', 'Quiet Tables', 'Morning Cafe', 'Soft Crowd'],
+    variants: audioCatalog.coffee,
   },
   {
     id: 'keyboard',
     name: 'Keyboard',
     icon: '⌨',
-    variants: ['Gentle Typing', 'Creamy Keys', 'Soft Mechanical', 'Light Work'],
+    variants: audioCatalog.keyboard,
   },
   {
     id: 'fireplace',
     name: 'Fireplace',
     icon: '♨',
-    variants: ['Soft Crackle', 'Warm Hearth', 'Low Embers', 'Cozy Fire'],
+    variants: audioCatalog.fireplace,
   },
   {
     id: 'traffic',
     name: 'City Ambience',
     icon: '▥',
-    variants: ['Muffled Traffic', 'Wet Streets', 'Distant City', 'Night Drive'],
+    variants: audioCatalog.traffic,
   },
   {
     id: 'synth',
     name: 'Synth Hum',
     icon: '≋',
-    variants: ['Analog Hum', 'Neon Drone', 'Deep Pad', 'Low Signal'],
+    variants: audioCatalog.synth,
   },
   {
     id: 'thunder',
     name: 'Thunder',
     icon: '↯',
-    variants: ['Distant Rumble', 'Soft Roll', 'Far Storm'],
+    variants: audioCatalog.thunder,
   },
   {
     id: 'pages',
     name: 'Page Turns',
     icon: '▤',
-    variants: ['Soft Paper', 'Gentle Rustle', 'Slow Reading', 'Library Pages'],
+    variants: audioCatalog.pages,
   },
   {
     id: 'room',
     name: 'Room Tone',
     icon: '◦',
-    variants: ['Quiet Room', 'Warm Air', 'Studio Tone', 'Still Space'],
+    variants: audioCatalog.room,
   },
   {
     id: 'engine',
     name: 'Engine Hum',
     icon: '◉',
-    variants: ['Space Engine', 'Reactor Hum', 'Ship Interior', 'Deep Idle'],
+    variants: audioCatalog.engine,
   },
   {
     id: 'beeps',
     name: 'Soft Beeps',
     icon: '⌁',
-    variants: ['Minimal Beeps', 'Calm Console', 'Distant Signals', 'Soft Chimes'],
+    variants: audioCatalog.beeps,
   },
   {
     id: 'wind',
     name: 'Wind Drone',
     icon: '≋',
-    variants: ['Smooth Wind', 'Airflow Drone', 'Glass Wind', 'Soft Draft'],
+    variants: audioCatalog.wind,
   },
 ]
 
@@ -164,7 +165,7 @@ function App() {
   const [sleepEnabled, setSleepEnabled] = useState(true)
   const [fadeOut, setFadeOut] = useState(true)
   const [variantByLayer, setVariantByLayer] = useState(() =>
-    Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0]])),
+    Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])),
   )
 
   const activePreset = useMemo(
@@ -185,7 +186,7 @@ function App() {
 
   function resetMix() {
     setMix(createMix(activePreset))
-    setVariantByLayer(Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0]])))
+    setVariantByLayer(Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])))
   }
 
   const visibleLayers = soundLayers.map((layer) => ({ ...layer, ...mix[layer.id] }))
@@ -369,8 +370,8 @@ function App() {
                   }
                 >
                   {layer.variants.map((variant) => (
-                    <option key={variant} value={variant}>
-                      {variant}
+                    <option key={variant.id} value={variant.id}>
+                      {variant.label}
                     </option>
                   ))}
                 </select>

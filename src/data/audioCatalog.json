@@ -1,0 +1,482 @@
+{
+  "rain": [
+    {
+      "id": "window-rain-4",
+      "label": "Window Rain 4",
+      "sourceFile": "Firefly_audio_Rain_Continuous_steady_light_rain_pattering_agains_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "window-rain-1",
+      "label": "Window Rain 1",
+      "sourceFile": "Firefly_audio_Rain_Continuous_steady_light_rain_pattering_agains_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "window-rain-3",
+      "label": "Window Rain 3",
+      "sourceFile": "Firefly_audio_Rain_Continuous_steady_light_rain_pattering_agains_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-rain-3",
+      "label": "Soft Rain 3",
+      "sourceFile": "Firefly_audio__Ultra-relaxing_soft_rain_tapping_gently_against_a_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-rain-4",
+      "label": "Soft Rain 4",
+      "sourceFile": "Firefly_audio__Ultra-relaxing_soft_rain_tapping_gently_against_a_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "rain-on-leaves-1",
+      "label": "Rain on Leaves 1",
+      "sourceFile": "Firefly_audio_30-second_continuous_recording_of_gentle_rain_fall_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "rain-on-leaves-2",
+      "label": "Rain on Leaves 2",
+      "sourceFile": "Firefly_audio_30-second_continuous_recording_of_gentle_rain_fall_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "rain-on-leaves-3",
+      "label": "Rain on Leaves 3",
+      "sourceFile": "Firefly_audio_30-second_continuous_recording_of_gentle_rain_fall_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "rain-on-leaves-4",
+      "label": "Rain on Leaves 4",
+      "sourceFile": "Firefly_audio_30-second_continuous_recording_of_gentle_rain_fall_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "coffee": [
+    {
+      "id": "muffled-cafe-4",
+      "label": "Muffled Cafe 4",
+      "sourceFile": "Firefly_audio_Coffee_Shop_Muffled_background_ambient_atmosphere__variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-cafe-1",
+      "label": "Muffled Cafe 1",
+      "sourceFile": "Firefly_audio_Coffee_Shop_Muffled_background_ambient_atmosphere__variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-cafe-2",
+      "label": "Muffled Cafe 2",
+      "sourceFile": "Firefly_audio_Coffee_Shop_Muffled_background_ambient_atmosphere__variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-cafe-3",
+      "label": "Muffled Cafe 3",
+      "sourceFile": "Firefly_audio_Coffee_Shop_Muffled_background_ambient_atmosphere__variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "cups-espresso-1",
+      "label": "Cups and Espresso 1",
+      "sourceFile": "Firefly_audio_30-second_quiet_cafe_ambience_focused_on_occasiona_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "cups-espresso-2",
+      "label": "Cups and Espresso 2",
+      "sourceFile": "Firefly_audio_30-second_quiet_cafe_ambience_focused_on_occasiona_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "cups-espresso-3",
+      "label": "Cups and Espresso 3",
+      "sourceFile": "Firefly_audio_30-second_quiet_cafe_ambience_focused_on_occasiona_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "cups-espresso-4",
+      "label": "Cups and Espresso 4",
+      "sourceFile": "Firefly_audio_30-second_quiet_cafe_ambience_focused_on_occasiona_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "keyboard": [
+    {
+      "id": "gentle-typing-3",
+      "label": "Gentle Typing 3",
+      "sourceFile": "Firefly_audio_Keyboard_Gentle_mechanical_keyboard_typing_noise,__variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "gentle-typing-1",
+      "label": "Gentle Typing 1",
+      "sourceFile": "Firefly_audio_Keyboard_Gentle_mechanical_keyboard_typing_noise,__variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "gentle-typing-2",
+      "label": "Gentle Typing 2",
+      "sourceFile": "Firefly_audio_Keyboard_Gentle_mechanical_keyboard_typing_noise,__variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "gentle-typing-4",
+      "label": "Gentle Typing 4",
+      "sourceFile": "Firefly_audio_Keyboard_Gentle_mechanical_keyboard_typing_noise,__variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "creamy-keys-1",
+      "label": "Creamy Keys 1",
+      "sourceFile": "Firefly_audio_Creamy_and_marbly_mechanical_keyboard_sound_effect_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "creamy-keys-2",
+      "label": "Creamy Keys 2",
+      "sourceFile": "Firefly_audio_Creamy_and_marbly_mechanical_keyboard_sound_effect_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "creamy-keys-3",
+      "label": "Creamy Keys 3",
+      "sourceFile": "Firefly_audio_Creamy_and_marbly_mechanical_keyboard_sound_effect_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "creamy-keys-4",
+      "label": "Creamy Keys 4",
+      "sourceFile": "Firefly_audio_Creamy_and_marbly_mechanical_keyboard_sound_effect_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "laptop-typing-1",
+      "label": "Laptop Typing 1",
+      "sourceFile": "Firefly_audio_close_recording_of_gentle_typing_on_a_quiet_laptop_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "laptop-typing-2",
+      "label": "Laptop Typing 2",
+      "sourceFile": "Firefly_audio_close_recording_of_gentle_typing_on_a_quiet_laptop_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "laptop-typing-3",
+      "label": "Laptop Typing 3",
+      "sourceFile": "Firefly_audio_close_recording_of_gentle_typing_on_a_quiet_laptop_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "laptop-typing-4",
+      "label": "Laptop Typing 4",
+      "sourceFile": "Firefly_audio_close_recording_of_gentle_typing_on_a_quiet_laptop_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "fireplace": [
+    {
+      "id": "soft-crackle-3",
+      "label": "Soft Crackle 3",
+      "sourceFile": "Firefly_audio_Fireplace_Cozy_fireplace_crackling_softly,_continu_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-crackle-1",
+      "label": "Soft Crackle 1",
+      "sourceFile": "Firefly_audio_Fireplace_Cozy_fireplace_crackling_softly,_continu_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-crackle-2",
+      "label": "Soft Crackle 2",
+      "sourceFile": "Firefly_audio_Fireplace_Cozy_fireplace_crackling_softly,_continu_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-crackle-4",
+      "label": "Soft Crackle 4",
+      "sourceFile": "Firefly_audio_Fireplace_Cozy_fireplace_crackling_softly,_continu_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "traffic": [
+    {
+      "id": "muffled-traffic-2",
+      "label": "Muffled Traffic 2",
+      "sourceFile": "Firefly_audio_City_Traffic_Distant_muffled_city_traffic_drone,_s_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-traffic-1",
+      "label": "Muffled Traffic 1",
+      "sourceFile": "Firefly_audio_City_Traffic_Distant_muffled_city_traffic_drone,_s_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-traffic-3",
+      "label": "Muffled Traffic 3",
+      "sourceFile": "Firefly_audio_City_Traffic_Distant_muffled_city_traffic_drone,_s_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "muffled-traffic-4",
+      "label": "Muffled Traffic 4",
+      "sourceFile": "Firefly_audio_City_Traffic_Distant_muffled_city_traffic_drone,_s_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "wet-street-1",
+      "label": "Wet Street 1",
+      "sourceFile": "Firefly_audio_ambience_of_distant_slow_city_traffic_on_a_wet_roa_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "wet-street-2",
+      "label": "Wet Street 2",
+      "sourceFile": "Firefly_audio_ambience_of_distant_slow_city_traffic_on_a_wet_roa_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "wet-street-3",
+      "label": "Wet Street 3",
+      "sourceFile": "Firefly_audio_ambience_of_distant_slow_city_traffic_on_a_wet_roa_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "wet-street-4",
+      "label": "Wet Street 4",
+      "sourceFile": "Firefly_audio_ambience_of_distant_slow_city_traffic_on_a_wet_roa_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "synth": [
+    {
+      "id": "analog-hum-4",
+      "label": "Analog Hum 4",
+      "sourceFile": "Firefly_audio_Synth_Hum_Minimalist_deep_analog_synthesizer_hum,__variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "analog-hum-1",
+      "label": "Analog Hum 1",
+      "sourceFile": "Firefly_audio_Synth_Hum_Minimalist_deep_analog_synthesizer_hum,__variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "analog-hum-2",
+      "label": "Analog Hum 2",
+      "sourceFile": "Firefly_audio_Synth_Hum_Minimalist_deep_analog_synthesizer_hum,__variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "analog-hum-3",
+      "label": "Analog Hum 3",
+      "sourceFile": "Firefly_audio_Synth_Hum_Minimalist_deep_analog_synthesizer_hum,__variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "warm-airy-pad-1",
+      "label": "Warm Airy Pad 1",
+      "sourceFile": "Firefly_audio_sustained_warm_airy_synthesizer_texture._Soft_roun_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "warm-airy-pad-2",
+      "label": "Warm Airy Pad 2",
+      "sourceFile": "Firefly_audio_sustained_warm_airy_synthesizer_texture._Soft_roun_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "warm-airy-pad-3",
+      "label": "Warm Airy Pad 3",
+      "sourceFile": "Firefly_audio_sustained_warm_airy_synthesizer_texture._Soft_roun_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "warm-airy-pad-4",
+      "label": "Warm Airy Pad 4",
+      "sourceFile": "Firefly_audio_sustained_warm_airy_synthesizer_texture._Soft_roun_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "thunder": [
+    {
+      "id": "distant-rumble-2",
+      "label": "Distant Rumble 2",
+      "sourceFile": "Firefly_audio_Thunder_Distant_low_rumble_of_thunder,_deep_rollin_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "distant-rumble-1",
+      "label": "Distant Rumble 1",
+      "sourceFile": "Firefly_audio_Thunder_Distant_low_rumble_of_thunder,_deep_rollin_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "distant-rumble-3",
+      "label": "Distant Rumble 3",
+      "sourceFile": "Firefly_audio_Thunder_Distant_low_rumble_of_thunder,_deep_rollin_variation3.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "pages": [
+    {
+      "id": "soft-paper-2",
+      "label": "Soft Paper 2",
+      "sourceFile": "Firefly_audio_._Page_Turns_Soft_paper_page_turning,_gentle_rustl_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-paper-1",
+      "label": "Soft Paper 1",
+      "sourceFile": "Firefly_audio_._Page_Turns_Soft_paper_page_turning,_gentle_rustl_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-paper-3",
+      "label": "Soft Paper 3",
+      "sourceFile": "Firefly_audio_._Page_Turns_Soft_paper_page_turning,_gentle_rustl_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "soft-paper-4",
+      "label": "Soft Paper 4",
+      "sourceFile": "Firefly_audio_._Page_Turns_Soft_paper_page_turning,_gentle_rustl_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "room": [
+    {
+      "id": "quiet-room-3",
+      "label": "Quiet Room 3",
+      "sourceFile": "Firefly_audio__Soft_Room_Tone_Empty_quiet_studio_room_tone,_pure_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "quiet-room-1",
+      "label": "Quiet Room 1",
+      "sourceFile": "Firefly_audio__Soft_Room_Tone_Empty_quiet_studio_room_tone,_pure_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "quiet-room-2",
+      "label": "Quiet Room 2",
+      "sourceFile": "Firefly_audio__Soft_Room_Tone_Empty_quiet_studio_room_tone,_pure_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "quiet-room-4",
+      "label": "Quiet Room 4",
+      "sourceFile": "Firefly_audio__Soft_Room_Tone_Empty_quiet_studio_room_tone,_pure_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "engine": [
+    {
+      "id": "space-engine-1",
+      "label": "Space Engine 1",
+      "sourceFile": "Firefly_audio_seamless_loop_of_a_deep_low-frequency_spaceship_en_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "space-engine-2",
+      "label": "Space Engine 2",
+      "sourceFile": "Firefly_audio_seamless_loop_of_a_deep_low-frequency_spaceship_en_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "space-engine-3",
+      "label": "Space Engine 3",
+      "sourceFile": "Firefly_audio_seamless_loop_of_a_deep_low-frequency_spaceship_en_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "space-engine-4",
+      "label": "Space Engine 4",
+      "sourceFile": "Firefly_audio_seamless_loop_of_a_deep_low-frequency_spaceship_en_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "beeps": [
+    {
+      "id": "minimal-beeps-1",
+      "label": "Minimal Beeps 1",
+      "sourceFile": "Firefly_audio__Soft_Beeps_Rhythmic_soft_minimalist_electronic_ch_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "minimal-beeps-2",
+      "label": "Minimal Beeps 2",
+      "sourceFile": "Firefly_audio__Soft_Beeps_Rhythmic_soft_minimalist_electronic_ch_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "minimal-beeps-3",
+      "label": "Minimal Beeps 3",
+      "sourceFile": "Firefly_audio__Soft_Beeps_Rhythmic_soft_minimalist_electronic_ch_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "minimal-beeps-4",
+      "label": "Minimal Beeps 4",
+      "sourceFile": "Firefly_audio__Soft_Beeps_Rhythmic_soft_minimalist_electronic_ch_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "sparse-console-1",
+      "label": "Sparse Console 1",
+      "sourceFile": "Firefly_audio_quiet_spacecraft_console_ambience_consisting_of_oc_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "sparse-console-2",
+      "label": "Sparse Console 2",
+      "sourceFile": "Firefly_audio_quiet_spacecraft_console_ambience_consisting_of_oc_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "sparse-console-3",
+      "label": "Sparse Console 3",
+      "sourceFile": "Firefly_audio_quiet_spacecraft_console_ambience_consisting_of_oc_variation3.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "sparse-console-4",
+      "label": "Sparse Console 4",
+      "sourceFile": "Firefly_audio_quiet_spacecraft_console_ambience_consisting_of_oc_variation4.wav",
+      "durationSeconds": 30
+    }
+  ],
+  "wind": [
+    {
+      "id": "smooth-wind-4",
+      "label": "Smooth Wind 4",
+      "sourceFile": "Firefly_audio__Wind_Drone_Continuous_smooth_wind_drone_blowing_p_variation4.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "smooth-wind-1",
+      "label": "Smooth Wind 1",
+      "sourceFile": "Firefly_audio__Wind_Drone_Continuous_smooth_wind_drone_blowing_p_variation1.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "smooth-wind-2",
+      "label": "Smooth Wind 2",
+      "sourceFile": "Firefly_audio__Wind_Drone_Continuous_smooth_wind_drone_blowing_p_variation2.wav",
+      "durationSeconds": 30
+    },
+    {
+      "id": "smooth-wind-3",
+      "label": "Smooth Wind 3",
+      "sourceFile": "Firefly_audio__Wind_Drone_Continuous_smooth_wind_drone_blowing_p_variation3.wav",
+      "durationSeconds": 30
+    }
+  ]
+}
