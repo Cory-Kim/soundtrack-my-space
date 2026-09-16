@@ -224,6 +224,23 @@ button {
   font-size: clamp(1rem, 1.6vw, 1.25rem);
 }
 
+.playback-status {
+  display: inline-flex;
+  margin-top: 16px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 44%, transparent);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(6, 12, 24, 0.46);
+  backdrop-filter: blur(18px);
+  font-size: 0.82rem;
+}
+
+.playback-status.warning {
+  border-color: rgba(255, 198, 114, 0.58);
+  color: #ffd29b;
+}
+
 .preset-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(128px, 1fr));

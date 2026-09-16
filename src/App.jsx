@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import audioCatalog from './data/audioCatalog.json'
 import './App.css'
 
@@ -149,7 +149,29 @@ const soundLayers = [
   },
 ]
 
-const formatTime = (minutes) => `${minutes}:00`
+const AUDIO_BASE_PATH = '/assets/audio/'
+const FADE_SECONDS = 30
+
+const formatClock = (seconds) => {
+  const safeSeconds = Math.max(0, Math.ceil(seconds))
+  const minutes = Math.floor(safeSeconds / 60)
+  const remainingSeconds = safeSeconds % 60
+  return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`
+}
+
+const getAudioSource = (layer, variantId) => {
+  const variant = layer.variants.find((item) => item.id === variantId) ?? layer.variants[0]
+  // Vite's public-file lookup expects literal commas in these filenames.
+  return `${AUDIO_BASE_PATH}${encodeURIComponent(variant.sourceFile).replaceAll('%2C', ',')}`
+}
+
+const playbackErrorMessage = (layer, error) => {
+  if (error.name === 'NotAllowedError') return `${layer.name}: press Play to allow audio playback.`
+  if (error.name === 'NotSupportedError') return `${layer.name}: the audio file could not be loaded. Try another variation.`
+  return `${layer.name} could not play. Try again or choose another variation.`
+}
+
+const getTimestamp = () => Date.now()
 
 const createMix = (preset) => Object.fromEntries(soundLayers.map((layer) => [
   layer.id,
@@ -160,28 +182,140 @@ function App() {
   const [activePresetId, setActivePresetId] = useState('cyberpunk-night')
   const [mix, setMix] = useState(() => createMix(presets[1]))
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isAudioReady, setIsAudioReady] = useState(false)
+  const [audioError, setAudioError] = useState('')
   const [masterVolume, setMasterVolume] = useState(72)
   const [sleepMinutes, setSleepMinutes] = useState(30)
   const [sleepEnabled, setSleepEnabled] = useState(true)
   const [fadeOut, setFadeOut] = useState(true)
+  const [sleepRemaining, setSleepRemaining] = useState(30 * 60)
   const [variantByLayer, setVariantByLayer] = useState(() =>
     Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])),
   )
+  const audioByLayerRef = useRef(new Map())
+  const audioSourceByLayerRef = useRef(new Map())
+  const sleepStartedAtRef = useRef(null)
+  const fadeVolumeRef = useRef(1)
 
   const activePreset = useMemo(
     () => presets.find((preset) => preset.id === activePresetId) ?? presets[0],
     [activePresetId],
   )
 
+  const getLayerVolume = useCallback((layerId, forcePlaying = isPlaying) => {
+    const layerMix = mix[layerId]
+    if (!layerMix?.enabled || !forcePlaying) return 0
+    return (layerMix.volume / 100) * (masterVolume / 100) * fadeVolumeRef.current
+  }, [isPlaying, masterVolume, mix])
+
+  const ensureLayerAudio = useCallback((layer) => {
+    let audio = audioByLayerRef.current.get(layer.id)
+
+    if (!audio) {
+      audio = new Audio()
+      audio.loop = true
+      audio.preload = 'auto'
+      audioByLayerRef.current.set(layer.id, audio)
+    }
+
+    const nextSource = getAudioSource(layer, variantByLayer[layer.id])
+    if (audioSourceByLayerRef.current.get(layer.id) !== nextSource) {
+      const wasPlaying = !audio.paused
+      audio.pause()
+      audio.src = nextSource
+      audio.load()
+      audioSourceByLayerRef.current.set(layer.id, nextSource)
+
+      if (wasPlaying && isPlaying && mix[layer.id]?.enabled) {
+        audio.play().catch(() => {
+          setAudioError(`${layer.name} could not restart. Try another variation.`)
+        })
+      }
+    }
+
+    return audio
+  }, [isPlaying, mix, variantByLayer])
+
+  const syncAudio = useCallback(() => {
+    soundLayers.forEach((layer) => {
+      const audio = ensureLayerAudio(layer)
+
+      audio.volume = getLayerVolume(layer.id)
+      if (!isPlaying || !mix[layer.id]?.enabled || audio.volume <= 0) {
+        audio.pause()
+        return
+      }
+
+      if (audio.paused) {
+        audio.play().catch(() => {
+          setAudioError(`${layer.name} could not start. Try another variation.`)
+        })
+      }
+    })
+  }, [ensureLayerAudio, getLayerVolume, isPlaying, mix])
+
   function selectPreset(id) {
     const preset = presets.find((item) => item.id === id)
     if (!preset) return
     setActivePresetId(id)
+    setAudioError('')
+    if (id === 'custom-space') return
     setMix(createMix(preset))
+    setVariantByLayer(Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])))
   }
 
   function updateLayer(id, changes) {
+    setActivePresetId('custom-space')
+    setAudioError('')
     setMix((current) => ({ ...current, [id]: { ...current[id], ...changes } }))
+  }
+
+  function playLayerFromClick(layer, nextEnabled = true) {
+    if (!isPlaying || !nextEnabled) return
+
+    const audio = ensureLayerAudio(layer)
+    const nextVolume = (mix[layer.id].volume / 100) * (masterVolume / 100) * fadeVolumeRef.current
+    audio.volume = nextVolume
+
+    if (nextVolume > 0) {
+      audio.play().catch(() => {
+        setAudioError(`${layer.name} could not start. Try another variation.`)
+      })
+    }
+  }
+
+  function toggleLayer(layer) {
+    const nextEnabled = !mix[layer.id].enabled
+    updateLayer(layer.id, { enabled: nextEnabled })
+
+    if (nextEnabled) {
+      playLayerFromClick(layer, true)
+    } else {
+      audioByLayerRef.current.get(layer.id)?.pause()
+    }
+  }
+
+  function changeLayerVariant(layer, variantId) {
+    if (variantByLayer[layer.id] === variantId) return
+    setActivePresetId('custom-space')
+    setAudioError('')
+    setVariantByLayer((current) => ({
+      ...current,
+      [layer.id]: variantId,
+    }))
+
+    if (!isPlaying || !mix[layer.id]?.enabled) return
+
+    const audio = audioByLayerRef.current.get(layer.id) ?? ensureLayerAudio(layer)
+    const nextSource = getAudioSource(layer, variantId)
+    audio.pause()
+    audio.src = nextSource
+    audio.load()
+    audioSourceByLayerRef.current.set(layer.id, nextSource)
+    audio.volume = getLayerVolume(layer.id, true)
+    audio.play().catch(() => {
+      setAudioError(`${layer.name} could not start. Try another variation.`)
+    })
   }
 
   function resetMix() {
@@ -189,7 +323,113 @@ function App() {
     setVariantByLayer(Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])))
   }
 
+  async function togglePlayback() {
+    setAudioError('')
+
+    if (isPlaying) {
+      setIsPlaying(false)
+      return
+    }
+
+    soundLayers.forEach((layer) => ensureLayerAudio(layer))
+    setIsAudioReady(true)
+
+    fadeVolumeRef.current = 1
+    sleepStartedAtRef.current = sleepEnabled ? getTimestamp() : null
+    setSleepRemaining(sleepMinutes * 60)
+
+    const activeLayers = soundLayers.filter((layer) => mix[layer.id]?.enabled)
+    const results = await Promise.allSettled(activeLayers.map(async (layer) => {
+      const audio = ensureLayerAudio(layer)
+      audio.volume = getLayerVolume(layer.id, true)
+      await audio.play()
+    }))
+
+    const rejectedCount = results.filter((result) => result.status === 'rejected').length
+    if (activeLayers.length === 0) {
+      setAudioError('Turn on at least one layer to start the mix.')
+      return
+    }
+
+    if (rejectedCount === activeLayers.length) {
+      setAudioError(results.map((result, index) => playbackErrorMessage(activeLayers[index], result.reason)).join(' '))
+      setIsPlaying(false)
+    } else {
+      setAudioError(rejectedCount > 0 ? 'Some layers could not start. Try their dropdown variations.' : '')
+      setIsPlaying(true)
+    }
+  }
+
+  useEffect(() => {
+    syncAudio()
+  }, [syncAudio])
+
+  useEffect(() => () => {
+    audioByLayerRef.current.forEach((audio) => {
+      audio.pause()
+      audio.src = ''
+    })
+    audioByLayerRef.current.clear()
+    audioSourceByLayerRef.current.clear()
+  }, [])
+
+  useEffect(() => {
+    if (!isPlaying || !sleepEnabled) return undefined
+
+    const intervalId = window.setInterval(() => {
+      const startedAt = sleepStartedAtRef.current ?? getTimestamp()
+      const totalSeconds = sleepMinutes * 60
+      const elapsedSeconds = (getTimestamp() - startedAt) / 1000
+      const remainingSeconds = Math.max(0, totalSeconds - elapsedSeconds)
+
+      if (fadeOut && remainingSeconds <= FADE_SECONDS) {
+        fadeVolumeRef.current = Math.max(0, remainingSeconds / FADE_SECONDS)
+        syncAudio()
+      }
+
+      setSleepRemaining(remainingSeconds)
+
+      if (remainingSeconds <= 0) {
+        setIsPlaying(false)
+        fadeVolumeRef.current = 1
+        sleepStartedAtRef.current = null
+      }
+    }, 500)
+
+    return () => window.clearInterval(intervalId)
+  }, [fadeOut, isPlaying, sleepEnabled, sleepMinutes, syncAudio])
+
+  function toggleSleepMode() {
+    const nextValue = !sleepEnabled
+    if (nextValue && isPlaying) {
+      sleepStartedAtRef.current = getTimestamp()
+      fadeVolumeRef.current = 1
+    } else {
+      sleepStartedAtRef.current = null
+    }
+    setSleepRemaining(sleepMinutes * 60)
+    setSleepEnabled(nextValue)
+  }
+
+  function chooseSleepMinutes(minutes) {
+    setSleepMinutes(minutes)
+    setSleepRemaining(minutes * 60)
+    if (isPlaying && sleepEnabled) {
+      sleepStartedAtRef.current = getTimestamp()
+      fadeVolumeRef.current = 1
+    }
+  }
+
   const visibleLayers = soundLayers.map((layer) => ({ ...layer, ...mix[layer.id] }))
+  const activeLayerCount = visibleLayers.filter((layer) => layer.enabled).length
+  const countdownLabel = sleepEnabled && isPlaying ? formatClock(sleepRemaining) : formatClock(sleepMinutes * 60)
+  const playbackStatus = audioError || (
+    isPlaying
+      ? `${activeLayerCount} layers playing`
+      : isAudioReady
+        ? 'Paused. Your mix is ready.'
+        : 'Ready when you press play.'
+  )
 
   return (
     <main
@@ -214,7 +454,7 @@ function App() {
           <button
             className="play-button"
             type="button"
-            onClick={() => setIsPlaying((value) => !value)}
+            onClick={togglePlayback}
             aria-label={isPlaying ? 'Pause ambience' : 'Play ambience'}
           >
             {isPlaying ? 'Ⅱ' : '▶'}
@@ -250,6 +490,7 @@ function App() {
             <p>Now playing</p>
             <h1 id="preset-heading">{activePreset.name}</h1>
             <span>{activePreset.tagline}</span>
+            <small className={audioError ? 'playback-status warning' : 'playback-status'}>{playbackStatus}</small>
           </div>
 
           <div className="preset-grid" aria-label="Soundscape presets">
@@ -279,7 +520,7 @@ function App() {
             <button
               className={`switch ${sleepEnabled ? 'on' : ''}`}
               type="button"
-              onClick={() => setSleepEnabled((value) => !value)}
+              onClick={toggleSleepMode}
               aria-label="Toggle sleep mode"
             >
               <span />
@@ -297,7 +538,7 @@ function App() {
                 className={sleepMinutes === minutes ? 'selected' : ''}
                 key={minutes}
                 type="button"
-                onClick={() => setSleepMinutes(minutes)}
+                onClick={() => chooseSleepMinutes(minutes)}
               >
                 {minutes}
               </button>
@@ -320,8 +561,16 @@ function App() {
           </div>
 
           <div className="countdown">
-            <span>{formatTime(sleepMinutes)}</span>
-            <small>{sleepEnabled ? 'Ready when you press play.' : 'Sleep mode is paused.'}</small>
+            <span>{countdownLabel}</span>
+            <small>
+              {sleepEnabled
+                ? isPlaying
+                  ? fadeOut
+                    ? `Fade starts in ${formatClock(Math.max(0, sleepRemaining - FADE_SECONDS))}`
+                    : 'Sleep timer is running.'
+                  : 'Ready when you press play.'
+                : 'Sleep mode is paused.'}
+            </small>
           </div>
 
           <button className="share-button" type="button">
@@ -353,7 +602,7 @@ function App() {
             <article className={`layer-card ${layer.enabled ? 'enabled' : 'muted'}`} key={layer.id}>
               <div className="layer-topline">
                 <span className="layer-icon">{layer.icon}</span>
-                <button className={`mini-switch ${layer.enabled ? 'on' : ''}`} type="button" role="switch" aria-checked={layer.enabled} aria-label={`Toggle ${layer.name}`} onClick={() => updateLayer(layer.id, { enabled: !layer.enabled })}>
+                <button className={`mini-switch ${layer.enabled ? 'on' : ''}`} type="button" role="switch" aria-checked={layer.enabled} aria-label={`Toggle ${layer.name}`} onClick={() => toggleLayer(layer)}>
                   <span />
                 </button>
               </div>
@@ -362,12 +611,7 @@ function App() {
                 <span>{layer.name}</span>
                 <select
                   value={variantByLayer[layer.id]}
-                  onChange={(event) =>
-                    setVariantByLayer((current) => ({
-                      ...current,
-                      [layer.id]: event.target.value,
-                    }))
-                  }
+                  onChange={(event) => changeLayerVariant(layer, event.target.value)}
                 >
                   {layer.variants.map((variant) => (
                     <option key={variant.id} value={variant.id}>
