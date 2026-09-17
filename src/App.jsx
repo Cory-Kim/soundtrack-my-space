@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import audioCatalog from './data/audioCatalog.json'
+import { getFadeVolume } from './audioUtils.js'
 import './App.css'
 
 const presets = [
@@ -151,6 +152,10 @@ const soundLayers = [
 
 const AUDIO_BASE_PATH = '/assets/audio/'
 const FADE_SECONDS = 30
+const DEFAULT_PRESET_ID = 'cyberpunk-night'
+const SLEEP_TEST_SECONDS = import.meta.env.DEV
+  ? Number(new URLSearchParams(window.location.search).get('sleepTestSeconds')) || null
+  : null
 
 const formatClock = (seconds) => {
   const safeSeconds = Math.max(0, Math.ceil(seconds))
@@ -178,19 +183,63 @@ const createMix = (preset) => Object.fromEntries(soundLayers.map((layer) => [
   { volume: preset.layers[layer.id] ?? 40, enabled: (preset.layers[layer.id] ?? 0) > 0, speed: 1 },
 ]))
 
+const readSharedVibe = () => {
+  const encoded = new URLSearchParams(window.location.hash.slice(1)).get('vibe')
+  if (!encoded) return null
+
+  try {
+    const payload = JSON.parse(atob(encoded.replaceAll('-', '+').replaceAll('_', '/')))
+    const presetId = presets.some((preset) => preset.id === payload.p) ? payload.p : 'custom-space'
+    const baseMix = createMix(presets.find((preset) => preset.id === presetId) ?? presets.at(-1))
+    const nextMix = { ...baseMix }
+    const nextVariants = Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id]))
+
+    soundLayers.forEach((layer) => {
+      const sharedLayer = payload.l?.[layer.id]
+      if (!Array.isArray(sharedLayer)) return
+      const [enabled, volume, speed, variantId] = sharedLayer
+      nextMix[layer.id] = {
+        enabled: Boolean(enabled),
+        volume: Number.isFinite(volume) ? Math.min(100, Math.max(0, volume)) : baseMix[layer.id].volume,
+        speed: Number.isFinite(speed) ? Math.min(1.25, Math.max(0.75, speed)) : 1,
+      }
+      if (layer.variants.some((variant) => variant.id === variantId)) nextVariants[layer.id] = variantId
+    })
+
+    return {
+      presetId,
+      mix: nextMix,
+      variants: nextVariants,
+      masterVolume: Number.isFinite(payload.m) ? Math.min(100, Math.max(0, payload.m)) : 72,
+      sleepMinutes: [15, 30, 45, 60].includes(payload.s?.[0]) ? payload.s[0] : 30,
+      sleepEnabled: payload.s?.[1] !== false,
+      fadeOut: payload.s?.[2] !== false,
+    }
+  } catch {
+    return null
+  }
+}
+
+const encodeSharedVibe = (payload) => btoa(JSON.stringify(payload))
+  .replaceAll('+', '-')
+  .replaceAll('/', '_')
+  .replaceAll('=', '')
+
 function App() {
-  const [activePresetId, setActivePresetId] = useState('cyberpunk-night')
-  const [mix, setMix] = useState(() => createMix(presets[1]))
+  const [sharedVibe] = useState(readSharedVibe)
+  const [activePresetId, setActivePresetId] = useState(sharedVibe?.presetId ?? DEFAULT_PRESET_ID)
+  const [mix, setMix] = useState(() => sharedVibe?.mix ?? createMix(presets[1]))
   const [isPlaying, setIsPlaying] = useState(false)
   const [isAudioReady, setIsAudioReady] = useState(false)
   const [audioError, setAudioError] = useState('')
-  const [masterVolume, setMasterVolume] = useState(72)
-  const [sleepMinutes, setSleepMinutes] = useState(30)
-  const [sleepEnabled, setSleepEnabled] = useState(true)
-  const [fadeOut, setFadeOut] = useState(true)
-  const [sleepRemaining, setSleepRemaining] = useState(30 * 60)
+  const [masterVolume, setMasterVolume] = useState(sharedVibe?.masterVolume ?? 72)
+  const [sleepMinutes, setSleepMinutes] = useState(sharedVibe?.sleepMinutes ?? 30)
+  const [sleepEnabled, setSleepEnabled] = useState(sharedVibe?.sleepEnabled ?? true)
+  const [fadeOut, setFadeOut] = useState(sharedVibe?.fadeOut ?? true)
+  const [sleepRemaining, setSleepRemaining] = useState(SLEEP_TEST_SECONDS ?? (sharedVibe?.sleepMinutes ?? 30) * 60)
+  const [shareStatus, setShareStatus] = useState('Share Vibe')
   const [variantByLayer, setVariantByLayer] = useState(() =>
-    Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])),
+    sharedVibe?.variants ?? Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])),
   )
   const audioByLayerRef = useRef(new Map())
   const audioSourceByLayerRef = useRef(new Map())
@@ -329,6 +378,33 @@ function App() {
     setVariantByLayer(Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])))
   }
 
+  async function shareVibe() {
+    const payload = {
+      v: 1,
+      p: activePresetId,
+      m: masterVolume,
+      s: [sleepMinutes, sleepEnabled, fadeOut],
+      l: Object.fromEntries(soundLayers.map((layer) => [layer.id, [
+        mix[layer.id].enabled,
+        mix[layer.id].volume,
+        mix[layer.id].speed,
+        variantByLayer[layer.id],
+      ]])),
+    }
+    const url = new URL(window.location.href)
+    url.searchParams.delete('sleepTestSeconds')
+    url.hash = `vibe=${encodeSharedVibe(payload)}`
+
+    try {
+      await navigator.clipboard.writeText(url.toString())
+      setShareStatus('Link copied')
+    } catch {
+      window.prompt('Copy your vibe link:', url.toString())
+      setShareStatus('Link ready')
+    }
+    window.setTimeout(() => setShareStatus('Share Vibe'), 2200)
+  }
+
   async function togglePlayback() {
     setAudioError('')
 
@@ -342,7 +418,7 @@ function App() {
 
     fadeVolumeRef.current = 1
     sleepStartedAtRef.current = sleepEnabled ? getTimestamp() : null
-    setSleepRemaining(sleepMinutes * 60)
+    setSleepRemaining(SLEEP_TEST_SECONDS ?? sleepMinutes * 60)
 
     const activeLayers = soundLayers.filter((layer) => mix[layer.id]?.enabled)
     const results = await Promise.allSettled(activeLayers.map(async (layer) => {
@@ -384,12 +460,13 @@ function App() {
 
     const intervalId = window.setInterval(() => {
       const startedAt = sleepStartedAtRef.current ?? getTimestamp()
-      const totalSeconds = sleepMinutes * 60
+      const totalSeconds = SLEEP_TEST_SECONDS ?? sleepMinutes * 60
       const elapsedSeconds = (getTimestamp() - startedAt) / 1000
       const remainingSeconds = Math.max(0, totalSeconds - elapsedSeconds)
 
-      if (fadeOut && remainingSeconds <= FADE_SECONDS) {
-        fadeVolumeRef.current = Math.max(0, remainingSeconds / FADE_SECONDS)
+      const nextFadeVolume = getFadeVolume(remainingSeconds, fadeOut, FADE_SECONDS)
+      if (nextFadeVolume !== fadeVolumeRef.current) {
+        fadeVolumeRef.current = nextFadeVolume
         syncAudio()
       }
 
@@ -412,23 +489,36 @@ function App() {
       fadeVolumeRef.current = 1
     } else {
       sleepStartedAtRef.current = null
+      fadeVolumeRef.current = 1
+      syncAudio()
     }
-    setSleepRemaining(sleepMinutes * 60)
+    setSleepRemaining(SLEEP_TEST_SECONDS ?? sleepMinutes * 60)
     setSleepEnabled(nextValue)
   }
 
   function chooseSleepMinutes(minutes) {
     setSleepMinutes(minutes)
-    setSleepRemaining(minutes * 60)
+    setSleepRemaining(SLEEP_TEST_SECONDS ?? minutes * 60)
     if (isPlaying && sleepEnabled) {
       sleepStartedAtRef.current = getTimestamp()
       fadeVolumeRef.current = 1
+      syncAudio()
     }
+  }
+
+  function toggleFadeOut() {
+    if (fadeOut) {
+      fadeVolumeRef.current = 1
+      syncAudio()
+    }
+    setFadeOut(!fadeOut)
   }
 
   const visibleLayers = soundLayers.map((layer) => ({ ...layer, ...mix[layer.id] }))
   const activeLayerCount = visibleLayers.filter((layer) => layer.enabled).length
-  const countdownLabel = sleepEnabled && isPlaying ? formatClock(sleepRemaining) : formatClock(sleepMinutes * 60)
+  const countdownLabel = sleepEnabled && (isPlaying || SLEEP_TEST_SECONDS)
+    ? formatClock(sleepRemaining)
+    : formatClock(sleepMinutes * 60)
   const playbackStatus = audioError || (
     isPlaying
       ? `${activeLayerCount} layers playing`
@@ -559,7 +649,7 @@ function App() {
             <button
               className={`switch ${fadeOut ? 'on' : ''}`}
               type="button"
-              onClick={() => setFadeOut((value) => !value)}
+              onClick={toggleFadeOut}
               aria-label="Toggle fade out"
             >
               <span />
@@ -579,8 +669,8 @@ function App() {
             </small>
           </div>
 
-          <button className="share-button" type="button">
-            Share Vibe
+          <button className="share-button" type="button" onClick={shareVibe} aria-live="polite">
+            {shareStatus}
           </button>
         </aside>
       </section>
