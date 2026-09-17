@@ -238,6 +238,10 @@ function App() {
   const [fadeOut, setFadeOut] = useState(sharedVibe?.fadeOut ?? true)
   const [sleepRemaining, setSleepRemaining] = useState(SLEEP_TEST_SECONDS ?? (sharedVibe?.sleepMinutes ?? 30) * 60)
   const [shareStatus, setShareStatus] = useState('Share Vibe')
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [installStatus, setInstallStatus] = useState(() =>
+    window.matchMedia('(display-mode: standalone)').matches ? 'installed' : 'ready',
+  )
   const [variantByLayer, setVariantByLayer] = useState(() =>
     sharedVibe?.variants ?? Object.fromEntries(soundLayers.map((layer) => [layer.id, layer.variants[0].id])),
   )
@@ -245,6 +249,39 @@ function App() {
   const audioSourceByLayerRef = useRef(new Map())
   const sleepStartedAtRef = useRef(null)
   const fadeVolumeRef = useRef(1)
+
+  useEffect(() => {
+    const handleInstallPrompt = (event) => {
+      event.preventDefault()
+      setInstallPrompt(event)
+      setInstallStatus('ready')
+    }
+    const handleInstalled = () => {
+      setInstallPrompt(null)
+      setInstallStatus('installed')
+    }
+
+    window.addEventListener('beforeinstallprompt', handleInstallPrompt)
+    window.addEventListener('appinstalled', handleInstalled)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleInstallPrompt)
+      window.removeEventListener('appinstalled', handleInstalled)
+    }
+  }, [])
+
+  const installApp = async () => {
+    if (installStatus === 'installed') return
+    if (!installPrompt) {
+      setInstallStatus('unavailable')
+      window.setTimeout(() => setInstallStatus('ready'), 2600)
+      return
+    }
+
+    await installPrompt.prompt()
+    const { outcome } = await installPrompt.userChoice
+    setInstallPrompt(null)
+    setInstallStatus(outcome === 'accepted' ? 'installed' : 'ready')
+  }
 
   const activePreset = useMemo(
     () => presets.find((preset) => preset.id === activePresetId) ?? presets[0],
@@ -568,8 +605,18 @@ function App() {
         </div>
 
         <div className="top-actions">
-          <button className="install-button" type="button">
-            Install App
+          <button
+            className="install-button"
+            type="button"
+            onClick={installApp}
+            disabled={installStatus === 'installed'}
+            title={installStatus === 'unavailable' ? 'Use Chrome on Android to install this app' : undefined}
+          >
+            {installStatus === 'installed'
+              ? 'Installed'
+              : installStatus === 'unavailable'
+                ? 'Open in Android Chrome'
+                : 'Install App'}
           </button>
           <div className="daypart">
             <span>☾</span>

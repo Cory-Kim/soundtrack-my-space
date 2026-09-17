@@ -161,6 +161,20 @@ button {
 
 .install-button {
   color: var(--accent);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.install-button:hover:not(:disabled),
+.install-button:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.install-button:disabled {
+  color: var(--muted);
+  cursor: default;
 }
 
 .daypart {
@@ -717,6 +731,10 @@ input[type='range'] {
   }
 
   .top-actions {
+    display: flex;
+  }
+
+  .top-actions .daypart {
     display: none;
   }
 
@@ -754,6 +772,10 @@ input[type='range'] {
     min-height: auto;
     grid-template-columns: 1fr;
     padding: 16px;
+  }
+
+  .top-actions {
+    justify-content: center;
   }
 
   .brand {
