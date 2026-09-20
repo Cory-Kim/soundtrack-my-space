@@ -1,16 +1,69 @@
-# React + Vite
+# Soundtrack My Space
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An immersive ambient sound mixer for building personalized focus, sleep, and relaxation soundscapes directly in the browser.
 
-Currently, two official plugins are available:
+**Live demo:** [soundtrack-my-space.cdokyung.workers.dev](https://soundtrack-my-space.cdokyung.workers.dev)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Mix multiple ambient sound layers in real time
+- Control each layer independently
+- Start quickly with curated mood presets
+- Use sleep mode for calmer nighttime sessions
+- Share a configured soundscape with others
+- Install the experience as a Progressive Web App
+- Continue using the app across responsive desktop and mobile layouts
+- Play real audio assets through a browser-based mixing interface
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+| Area | Technologies |
+| --- | --- |
+| Interface | React, JavaScript, CSS |
+| Build tooling | Vite |
+| Audio | Web Audio and browser media APIs |
+| App experience | Progressive Web App support |
+| Hosting | Cloudflare Workers |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting started
+
+### Prerequisites
+
+- Node.js 20 or newer
+- npm
+
+### Local development
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+### Production build
+
+```bash
+npm run build
+npm run preview
+```
+
+## Project structure
+
+```text
+src/       React components, application state, and audio controls
+public/    Audio files, icons, and PWA assets
+docs/      Product and technical notes
+```
+
+## Product approach
+
+The interface is designed to make a technically rich audio system feel immediate. Presets provide a useful starting point, while independent layer controls let users shape a soundscape without navigating away from the main experience.
+
+## Deployment
+
+The production build is configured for Cloudflare Workers through `wrangler.jsonc`.
+
+## Author
+
+Built by [Cory Kim](https://github.com/Cory-Kim).
