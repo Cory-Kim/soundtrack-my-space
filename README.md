@@ -1,5 +1,7 @@
 # Soundtrack My Space
 
+[![CI](https://github.com/Cory-Kim/soundtrack-my-space/actions/workflows/ci.yml/badge.svg)](https://github.com/Cory-Kim/soundtrack-my-space/actions/workflows/ci.yml)
+
 An immersive ambient sound mixer for building personalized focus, sleep, and relaxation soundscapes directly in the browser.
 
 **Live demo:** [soundtrack-my-space.cdokyung.workers.dev](https://soundtrack-my-space.cdokyung.workers.dev)
@@ -47,6 +49,14 @@ Open the local URL printed by Vite.
 npm run build
 npm run preview
 ```
+
+### Quality checks
+
+```bash
+npm run check
+```
+
+The check covers linting, sleep-timer fade behavior, audio-catalog integrity, and the production build.
 
 ## Project structure
 
